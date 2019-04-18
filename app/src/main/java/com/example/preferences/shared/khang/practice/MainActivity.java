@@ -5,13 +5,11 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -22,7 +20,7 @@ import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity {
-    List<Manager> managers =new ArrayList<>();
+    List<Manager> managers = new ArrayList<>();
 
 
     private RecyclerView recyclerView;
@@ -47,51 +45,27 @@ public class MainActivity extends AppCompatActivity {
                 dialogInput();
             }
         });
-
-
     }
-
 
 
     private void getRealmData() {
         Realm realm = Realm.getDefaultInstance();
-        final RealmResults<Manager> manager = realm.where(Manager.class).findAll();
+        managers = realm.where(Manager.class).findAll();
 
-        rvAdapter = new RecycleviewAdapter(this, managers);
-        RealmQuery<Manager> managerRealmQuery = realm.where(Manager.class);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        rvAdapter = new RecycleviewAdapter(MainActivity.this, manager);
-        recyclerView.setAdapter(rvAdapter);
-        rvAdapter.changeData(new RecycleviewAdapter.ChangeInterface() {
+        rvAdapter = new RecycleviewAdapter(this, managers, new RecycleviewAdapter.Action() {
+            @Override
+            public void onClickItem(Manager manager, int position) {
+               // dialogInput();
+            }
 
             @Override
-            public void changeData(View view, int position, boolean b) {
-                changedata(view, managers.get(position));
-
+            public void onLongClickItem(Manager manager, int position) {
+                dialogchangeData(manager.getMaso(), manager.getSoluong(), manager.getName());
             }
         });
-
-
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyclerView.setAdapter(rvAdapter);
     }
-
-
-
-    private void changedata(View view, Manager manager) {
-        et_soluong = manager.getSoluong();
-        et_name = manager.getName();
-        et_maso = manager.getMaso();
-
-        dialogchangeData(et_maso, et_soluong, et_name);
-    }
-
-
-
-
-
-
-
-
-
     private void dialogInput() {
         String titleBtn = "Lưu lại";
 
@@ -138,8 +112,9 @@ public class MainActivity extends AppCompatActivity {
 
         AlertDialog dialog = builder.create();
         dialog.show();
-        }
-    private void dialogchangeData(final String et_maso, final String et_soluong, final String et_name) {
+    }
+
+    private void dialogchangeData(final String maso, final String soluong, final String name) {
         String titleBtn = "Thay đổi";
 
         LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
@@ -154,9 +129,10 @@ public class MainActivity extends AppCompatActivity {
         final EditText soluongInput = (EditText) itemView.findViewById(R.id.dl_main_act_soluong);
         final EditText masoInput = (EditText) itemView.findViewById(R.id.dl_main_act_code);
 
-        nameInput.setText(this.et_name);
-        soluongInput.setText(this.et_soluong);
-        masoInput.setText(this.et_maso);
+        nameInput.setText(name);
+        soluongInput.setText(soluong);
+        masoInput.setText(maso);
+        masoInput.setEnabled(false);
 
         builder.setCancelable(false).setPositiveButton(titleBtn, new DialogInterface.OnClickListener() {
 
@@ -165,15 +141,7 @@ public class MainActivity extends AppCompatActivity {
                 if (nameInput.length() == 0 || soluongInput.length() == 0) {
                     Toast.makeText(MainActivity.this, "Du lieu ko đầy đủ", Toast.LENGTH_SHORT).show();
                 } else {
-                    MainActivity.this.et_name = nameInput.getText().toString();
-                    MainActivity.this.et_maso = masoInput.getText().toString();
-                    MainActivity.this.et_soluong = soluongInput.getText().toString();
-
-                    changeData();
-
-                    rvAdapter.notifyDataSetChanged();
-
-                    Toast.makeText(MainActivity.this, "thay đổi thành công", Toast.LENGTH_SHORT).show();
+                    updateManager(nameInput.getText().toString(), maso, soluongInput.getText().toString());
                 }
             }
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -189,18 +157,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void changeData() {
+    void updateManager(String name, String maso, String soluong) {
+        // This query is fast because "character" is an indexed field
+        Manager manager = realm.where(Manager.class)
+                .equalTo("name", name)
+                .findFirst();
         realm.beginTransaction();
-
-        Manager manager = realm.createObject(Manager.class);;
-        manager.setMaso(et_maso);
-        manager.setName(et_name);
-
+        if (manager != null) {
+            manager.setName(maso);
+            manager.setSoluong(soluong);
+        }
         realm.commitTransaction();
-        getRealmData();
-
-
+        managers = realm.where(Manager.class).findAll();
     }
+
     private void initListener() {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
@@ -217,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         recyclerView = findViewById(R.id.main_act_rv);
         floatingActionButton = findViewById(R.id.fab);
-
 
 
     }

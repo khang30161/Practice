@@ -14,20 +14,12 @@ import java.util.List;
 public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Manager> managers;
     private Context context;
-    private onItemClick itemClick;
-    private ChangeInterface changeInterface;
+    private Action action;
 
-    public RecycleviewAdapter(Context context, List managers) {
+    public RecycleviewAdapter(Context context, List managers, Action action) {
+        this.context = context;
         this.managers = managers;
-        this.itemClick = itemClick;
-    }
-
-    public RecycleviewAdapter(MainActivity managers, String[] mainActivity) {
-
-    }
-
-    public void changeData(ChangeInterface changeInterface) {
-        this.changeInterface = changeInterface;
+        this.action = action;
     }
 
     @NonNull
@@ -35,7 +27,6 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         return new Viewholder(
                 LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.add_item, viewGroup, false));
-
     }
 
     @Override
@@ -50,39 +41,31 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         holder.tvMaso.setText(managers.get(position).getMaso());
         holder.tvSoluong.setText(String.valueOf(managers.get(position).getSoluong()));
         holder.llline.setOnLongClickListener(new View.OnLongClickListener() {
-
-
             @Override
             public boolean onLongClick(View v) {
-                changeInterface.changeData(v, position, true);
-
-                return true;
+                if (action != null)
+                    action.onLongClickItem(managers.get(position), position);
+                return false;
             }
         });
-
+        holder.llline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (action != null)
+                    action.onClickItem(managers.get(position), position);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-
-
-        return (managers.size());
+        return (managers != null ? managers.size() : 0);
     }
 
-    public void setOnLongClickListener(View.OnLongClickListener onLongClickListener) {
-    }
+    public interface Action {
+        void onClickItem(Manager manager, int position);
 
-    public void setItemClick(onItemClick itemClick) {
-        this.itemClick = itemClick;
-    }
-
-    public interface onItemClick {
-        void onItemClick(View view, int position, boolean b);
-
-    }
-
-    public interface ChangeInterface {
-        void changeData(View view, int position, boolean b);
+        void onLongClickItem(Manager manager, int position);
     }
 
     public class Viewholder extends RecyclerView.ViewHolder {
@@ -99,12 +82,6 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             llline = itemView.findViewById(R.id.line);
 
         }
-
-        public void onClick(View view) {
-            itemClick.onItemClick(view, getAdapterPosition(), false);
-        }
-
-
     }
 
 
