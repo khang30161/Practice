@@ -24,14 +24,12 @@ import io.realm.RealmResults;
 public class MainActivity extends AppCompatActivity {
     List<Manager> managers =new ArrayList<>();
 
-    private CardView cardView;
+
     private RecyclerView recyclerView;
     private RecycleviewAdapter rvAdapter;
-    private String et_name;
-    private String et_maso;
+    private String et_name, et_maso;
     private String et_soluong;
-    private TextView tv_change;
-    private View view;
+
     private FloatingActionButton floatingActionButton;
     private Realm realm = null;
 
@@ -142,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
         }
     private void dialogchangeData(final String et_maso, final String et_soluong, final String et_name) {
-        String titleBtn = "thay đổi";
+        String titleBtn = "Thay đổi";
 
         LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
 
@@ -219,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         recyclerView = findViewById(R.id.main_act_rv);
         floatingActionButton = findViewById(R.id.fab);
-        cardView = findViewById(R.id.card_view);
+
 
 
     }
