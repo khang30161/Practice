@@ -159,6 +159,8 @@ public class MainActivity extends AppCompatActivity {
 
     void updateManager(String name, String maso, String soluong) {
         // This query is fast because "character" is an indexed field
+        realm=Realm.getDefaultInstance();
+        rvAdapter.notifyDataSetChanged();
         Manager manager = realm.where(Manager.class)
                 .equalTo("name", name)
                 .findFirst();
