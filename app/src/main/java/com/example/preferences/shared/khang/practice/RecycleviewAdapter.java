@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -72,7 +73,7 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         private TextView tvName;
         private TextView tvMaso;
         private TextView tvSoluong;
-        private LinearLayout llline;
+        private RelativeLayout llline;
 
         public Viewholder(View itemView) {
             super(itemView);

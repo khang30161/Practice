@@ -6,33 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
-
-    <LinearLayout
+    <TextView
         android:id="@+id/line2"
-        android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:ignore="NotSibling">
-        <TextView
-            android:id="@+id/tv_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Name Product"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tv_code"
-            android:layout_marginHorizontal="50dp"
-            android:text="Ma don hang"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tv_soluong"
-            android:text="So Luong đơn"/>
-
-    </LinearLayout>
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:hint="Login"/>
     <android.support.v7.widget.RecyclerView
         android:layout_below="@+id/line2"
         android:id="@+id/main_act_rv"
