@@ -7,14 +7,14 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/line2"
+        android:id="@+id/tv_act_main_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_marginRight="20dp"
         android:hint="Login"/>
     <android.support.v7.widget.RecyclerView
-        android:layout_below="@+id/line2"
+        android:layout_below="@+id/tv_act_main_login"
         android:id="@+id/main_act_rv"
         android:layout_width="wrap_content"
         android:layout_marginVertical="20dp"

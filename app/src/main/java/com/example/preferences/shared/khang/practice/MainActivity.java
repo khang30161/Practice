@@ -1,9 +1,12 @@
 package com.example.preferences.shared.khang.practice;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -27,10 +31,12 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecycleviewAdapter rvAdapter;
     private String nameA, masoA,soluongA;
-
-
+    private EditText ho_va_ten;
+    private TextView login;
     private FloatingActionButton floatingActionButton;
     private Realm realm = null;
+    private String namelogin;
+    String prefname="my_data";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +46,14 @@ public class MainActivity extends AppCompatActivity {
         initView();
         setDatabyBundle();
         getRealmData();
+
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogLogin();
+
+            }
+        });
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -48,6 +62,58 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void dialogLogin() {
+        String titleBtn = "SAVE";
+
+        LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
+
+        View itemView	= inflater.inflate(R.layout.activity_login, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+        builder.setView(itemView);
+
+        ho_va_ten = (EditText) itemView.findViewById(R.id.et_main_act_login);
+
+
+        builder.setCancelable(false).setPositiveButton(titleBtn, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                String prefname="my_data";
+                SharedPreferences pre=getSharedPreferences(prefname, MODE_PRIVATE);
+                SharedPreferences.Editor editor=pre.edit();
+                String user=ho_va_ten.getText().toString();
+                editor.putString("user", user);
+                editor.apply();
+                getData(user);
+
+                    rvAdapter.notifyDataSetChanged();
+
+                    Toast.makeText(MainActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+
+            }
+        }).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+    }
+
+    private void getData(String user) {
+        SharedPreferences pre=getSharedPreferences (prefname,MODE_PRIVATE);
+        String user1=pre.getString("user","");
+        login.setText(user1);
+    }
+
 
     private void setDatabyBundle() {
         Intent intent = getIntent();
@@ -159,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         recyclerView = findViewById(R.id.main_act_rv);
         floatingActionButton = findViewById(R.id.fab);
-
-
+        ho_va_ten=findViewById(R.id.et_main_act_login);
+        login=findViewById(R.id.tv_act_main_login);
     }
 }
